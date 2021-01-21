@@ -1,6 +1,6 @@
 const express = require("express");
 const Dishes = require("../models/dishes");
-
+var authenticate = require('../authenticate');
 const dishRouter = express.Router();
 
 dishRouter.use(express.json());
@@ -20,7 +20,7 @@ dishRouter
       )
       .catch((err) => next(err));
   })
-  .post((req, res, next) => {
+  .post(authenticate.verifyUser, (req, res, next) => {
     Dishes.create(req.body)
       .then(
         (dish) => {
@@ -33,11 +33,11 @@ dishRouter
       )
       .catch((err) => next(err));
   })
-  .put((req, res) => {
+  .put(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end("PUT operation not supported on /dishes");
   })
-  .delete((req, res) => {
+  .delete(authenticate.verifyUser, (req, res) => {
     Dishes.deleteMany({})
       .then((resp) => {
         res.statusCode = 200;

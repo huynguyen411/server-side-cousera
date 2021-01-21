@@ -8,6 +8,7 @@ var FileStore = require('session-file-store')(session);
 const mongoose = require('mongoose');
 var passport = require('passport');
 var authenticate = require('./authenticate');
+var config = require('./config');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -15,7 +16,7 @@ const dishRouter = require('./routes/dishRouter');
 const promoRouter = require('./routes/promoRouter');
 const leaderRouter = require('./routes/leaderRouter');
 
-const url = 'mongodb://localhost:27017/conFusion';
+const url = config.mongoUrl;
 const connect = mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
 
 connect.then(() => {
@@ -34,16 +35,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // app.use(cookieParser('12345-67890-09876-54321'));
 
-app.use(session({
-  name: 'session-id',
-  secret: '12345-67890-09876-54321',
-  saveUninitialized: false,
-  resave: false,
-  store: new FileStore()
-}));
+// app.use(session({
+//   name: 'session-id',
+//   secret: '12345-67890-09876-54321',
+//   saveUninitialized: false,
+//   resave: false,
+//   store: new FileStore()
+// }));
 
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 function auth(req, res, next) {
 
@@ -85,7 +86,7 @@ function auth(req, res, next) {
 
 }
 
-app.use(auth);
+// app.use(auth);
 
 app.use(express.static(path.join(__dirname, 'public')));
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const Leaders = require('../models/leaders');
 const leaderRouter = express.Router();
+var authenticate = require('../authenticate');
 
 leaderRouter.use(express.json());
 
@@ -14,7 +15,7 @@ leaderRouter.route('/')
       }, err => next(err))
       .catch(err => next(err));
   })
-  .post((req, res, next) => {
+  .post(authenticate.verifyUser, (req, res, next) => {
     Leaders.create(req.body);
     Leaders.save()
       .then(leaders => {
@@ -25,11 +26,11 @@ leaderRouter.route('/')
       }, err => next(err))
       .catch(err => next(err));
   })
-  .put((req, res) => {
+  .put(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /leaders');
   })
-  .delete((req, res) => {
+  .delete(authenticate.verifyUser, (req, res) => {
     Leaders.deleteMany({})
       .then(leaders => {
         res.statusCode = 200;

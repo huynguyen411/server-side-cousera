@@ -1,5 +1,6 @@
 const express = require('express');
 const Promotions = require('../models/promotions');
+var authenticate = require('../authenticate');
 
 const promoRouter = express.Router();
 
@@ -15,7 +16,7 @@ promoRouter.route('/')
       }, err => next(err))
       .catch(err => next(err));
   })
-  .post((req, res, next) => {
+  .post(authenticate.verifyUser, (req, res, next) => {
     Promotions.create(req.body);
     Promotions.save()
       .then(promotions => {
@@ -26,11 +27,11 @@ promoRouter.route('/')
       }, err => next(err))
       .catch(err => next(err));
   })
-  .put((req, res) => {
+  .put(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /promotions');
   })
-  .delete((req, res) => {
+  .delete(authenticate.verifyUser, (req, res) => {
     Promotions.deleteMany({})
       .then(promotions => {
         res.statusCode = 200;
